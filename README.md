@@ -1,1 +1,4 @@
 # AgniVault
+
+## Dependencies
+- libsodium

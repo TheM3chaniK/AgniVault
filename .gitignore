@@ -1,6 +1,12 @@
 # Prerequisites
 *.d
 
+bin/
+build/
+.cache/
+env/
+compile_commands.json
+
 # Compiled Object files
 *.slo
 *.lo
