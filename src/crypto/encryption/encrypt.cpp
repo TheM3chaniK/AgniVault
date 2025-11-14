@@ -23,7 +23,7 @@ bool Encryption::encryptBuffer(const std::vector<unsigned char> &plainBytes,
   unsigned char _nonce[NONCE_BYTES];
   randombytes_buf(_nonce, NONCE_BYTES);
 
-  // nonce.assign(_nonce, _nonce + NONCE_BYTES);
+  nonce.assign(_nonce, _nonce + NONCE_BYTES);
 
   unsigned long long generatedCipherTextLength;
 

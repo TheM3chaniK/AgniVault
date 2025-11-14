@@ -37,7 +37,7 @@ int main() {
 
   LOG_DEBUG_INFO("Writing Encryption To The File");
   fout.write(reinterpret_cast<char *>(cipherText.data()), cipherText.size());
-  // fout.write(reinterpret_cast<char *>(nonce.data()), nonce.size());
+  fout.write(reinterpret_cast<char *>(nonce.data()), nonce.size());
   LOG_INFO("Write complete");
   fout.close();
   delete encryption;
