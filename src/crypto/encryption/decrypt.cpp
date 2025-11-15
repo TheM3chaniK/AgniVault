@@ -9,18 +9,19 @@ bool Encryption::decryptBuffer(std::vector<unsigned char> &outPlainBytes,
                                std::vector<unsigned char> &nonce,
                                std::string uname, std::string projectId,
                                const std::vector<unsigned char> &cipherBytes) {
-  if (sodium_init() > 0) {
+  if (sodium_init() < 0) {
     LOG_DEBUG_ERROR("Sodium Init Error");
     return false;
   }
   unsigned char ad[TAG_BYTES];
   this->derivedAd(ad, sizeof(ad), uname, projectId);
   unsigned long long decryptedOutPlainBytesLength = 0;
-  if (crypto_aead_xchacha20poly1305_ietf_decrypt(
-          outPlainBytes.data(), &decryptedOutPlainBytesLength, nullptr,
-          cipherBytes.data(), cipherBytes.size(), ad, sizeof(ad), nonce.data(),
-          key) < 0) {
-    LOG_ERROR("Error While decrypting");
+  int successCode = crypto_aead_xchacha20poly1305_ietf_decrypt(
+      outPlainBytes.data(), &decryptedOutPlainBytesLength, nullptr,
+      cipherBytes.data(), cipherBytes.size(), ad, sizeof(ad), nonce.data(),
+      key);
+  if (successCode < 0) {
+    LOG_DEBUG_ERROR("Error While decrypting, CODE: " << successCode);
     return false;
   }
   return true;

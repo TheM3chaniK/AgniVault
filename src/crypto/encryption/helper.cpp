@@ -4,6 +4,8 @@
 using namespace AgniVault::Crypto;
 
 size_t Encryption::getKeyByteSize() { return KEY_BYTES; }
+size_t Encryption::getNonceByteSize() { return NONCE_BYTES; }
+size_t Encryption::getTagByteSize() { return TAG_BYTES; }
 
 bool Encryption::derivedAd(unsigned char *ad, size_t adSize, std::string uname,
                            std::string projectId) {

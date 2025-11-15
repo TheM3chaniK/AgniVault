@@ -17,8 +17,10 @@ bool Encryption::encryptBuffer(const std::vector<unsigned char> &plainBytes,
     LOG_DEBUG_ERROR("Sodium INIT error");
     return false;
   }
-  if (plainBytes.empty())
+  if (plainBytes.empty()) {
+    LOG_DEBUG_ERROR("Plain Bytes Are Empty");
     return false;
+  }
 
   unsigned char _nonce[NONCE_BYTES];
   randombytes_buf(_nonce, NONCE_BYTES);
