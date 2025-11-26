@@ -3,7 +3,7 @@
 # ────────────────────────────────────────────────
 CXX := g++
 CXXFLAGS := -std=c++20 -Wall -Wextra -O2 -Iinclude
-LDFLAGS := -lsodium
+LDFLAGS := -lsodium -lsqlite3
 
 ifeq ($(DEBUG),1)
     CXXFLAGS += -g -DDEBUG -O0
