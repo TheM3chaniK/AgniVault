@@ -1,115 +1,233 @@
-# **AgniVault 🔥 — A Secure, Developer-First File Vault**
+# **AgniVault**
 
-AgniVault is a personal security tool designed for developers who want a reliable and private vault for their project files, assets, and sensitive resources. It protects what matters to you while staying simple, fast, and easy to use.
+AgniVault is a cybersecurity-focused, systems-level CLI tool that encrypts, stores, opens, and manages entire development projects locally.
+All decrypted data exists only in RAM (`/dev/shm/agnivault/`), ensuring **zero plaintext on disk**.
 
-AgniVault is not just another encryption utility — it is your **personal guard** that ensures your creative and technical work stays yours, even when it moves across machines, repos, or environments.
-
----
-
-## 🌟 **Why I Started AgniVault**
-
-Modern developers deal with far more than code:
-
-- Project configs  
-- Environment files  
-- Research notes  
-- API keys (not supposed to—but people do)  
-- Prototype assets  
-- Documentation drafts  
-- Private logs  
-- Local build artifacts  
-- Sensitive project data  
-
-Yet most of us still store these in plain text or unprotected folders because:
-
-- Proper encryption tools feel too heavy  
-- Existing solutions don't fit a developer workflow  
-- Password managers aren’t built for actual files  
-- Cloud storage is convenient but not private  
-- Git repos leak sensitive files too easily  
-- Managing keys manually is annoying  
-- Security setups break easily
-
-I kept facing this problem myself.  
-Every time I worked on a project, I found myself storing sensitive stuff in random places — either insecure or inconvenient.
-
-That's when I decided to build **AgniVault**.
+Built in **C++20** using **libsodium**, **yaml-cpp**, and **SQLite**.
 
 ---
 
-## 🎯 **What AgniVault Aims to Solve**
+## **Overview**
 
-AgniVault focuses on three goals:
+AgniVault provides a secure local vault for storing entire project directories. It is designed for developers who want:
 
-### **1. A simple, personal vault for project files**
-Just choose a file -> encrypt -> done.  
-No configuration, no overhead, no “security expertise” required.
+- **Local encryption**
+- **Offline privacy**
+- **Fast RAM-based workspaces**
+- **Developer-centric CLI commands**
+- **Zero plaintext on disk**
 
-### **2. Security built around *your* development workflow**
-A tool that feels natural to use inside:
+AgniVault uses **identity metadata (name + email)** only for **authenticity tagging**, _not encryption._
+Identity must match to open a project, but it is **not** part of any key.
 
-- Local development  
-- Scripts  
-- Build pipelines  
-- Custom tools  
-- Version control  
-- Your usual command-line workflow
+All persistent data is stored under:
 
-Not something that slows you down.
+```
+~/.config/agnivault/
+    ├── VaultCode         (master key)
+    ├── agnivault.db      (SQLite metadata)
+    └── config.yaml       (identity for authenticity checks)
+```
 
-### **3. Strong protection without complexity**
-You shouldn’t need to understand cryptography or manage complicated setups.  
-AgniVault does the heavy lifting behind the scenes — clean, consistent, and automatic.
+Decrypted project files exist only here:
 
----
-
-## 🌱 **Where AgniVault Is Going (Vision)**
-
-AgniVault is designed to evolve into a complete security layer for developers:
-
-- 🔒 Local and portable file vault  
-- 🗂️ Project-level secure storage  
-- 🚀 CLI-first workflow  
-- 📦 File integrity & tamper detection  
-- 🔑 Smooth key management  
-- 🧩 Optional integrations with your build tools  
-- 🌐 Future cloud-sync-compatible vaults (without sacrificing privacy)
-
-AgniVault will always put **privacy first**, **developer experience second**, and **complexity last**.
+```
+/dev/shm/agnivault/<project_name>/
+```
 
 ---
 
-## 🚧 **Current Status (Pre-v0)**
+## **Key Features**
 
-AgniVault is currently in active development with rapid feature iterations.  
-The core functionality works, but many features are being refined before the first official release.
-
-A full technical breakdown — encryption engine, file pipeline, architecture, benchmarks, and security notes — will be added in the v0 release.
-
----
-
-## ❤️ **For Developers, By a Developer**
-
-AgniVault is something I built because *I* needed it.  
-If you’re someone who:
-
-- juggles multiple projects  
-- wants a private way to protect sensitive files  
-- wants a tool that blends in with coding life  
-- hates unnecessary complexity  
-
-then AgniVault is being built for you too.
+- 🔐 Strong encryption using **libsodium (XChaCha20-Poly1305)**
+- 🧾 Identity-based **authenticity tags**, not encryption keys
+- ⚡ **RAM-only** decrypted workspace
+- 🗄️ SQLite-backed metadata system
+- 🛠️ Full CLI for project lifecycle management
+- 📁 Handles entire **project directories**, not just secrets
+- 🧩 YAML configuration via yaml-cpp
+- 🛑 **Zero plaintext ever touches disk**
 
 ---
 
-## 📣 **Contributions & Feedback**
+## **Dependencies**
 
-Feedback is always welcome!  
-If you have ideas, UX suggestions, feature requests, or even design thoughts — open an issue or drop a message.
+- C++20 compiler (g++ ≥ 11 / clang ≥ 12)
+- libsodium
+- yaml-cpp
+- sqlite3
+- make
 
-This project is for developers, and I want the community’s input to shape the future.
+### **Install (Examples)**
+
+**Debian / Ubuntu**
+
+```bash
+sudo apt install libsodium-dev libyaml-cpp-dev libsqlite3-dev build-essential
+```
+
+**Arch Linux**
+
+```bash
+sudo pacman -S libsodium yaml-cpp sqlite base-devel
+```
 
 ---
 
-## 🔥 **AgniVault — Protect Your Craft. Own Your Work.**  
+## **Build**
 
+```bash
+git clone https://github.com/<you>/AgniVault
+cd AgniVault
+make          # debug build
+make PROD=1   # production build
+```
+
+Output:
+
+```
+bin/agniv
+```
+
+---
+
+## **Configuration**
+
+Location:
+
+```
+~/.config/agnivault/config.yaml
+```
+
+Example:
+
+```yaml
+name: "Your Name"
+email: "your@email.com"
+```
+
+Identity is embedded into **AEAD associated data (AAD)**:
+
+- ❌ Does _not_ encrypt the file
+- ✔️ Prevents decryption if identity mismatches
+- ✔️ Acts as authenticity + integrity check
+
+---
+
+## **CLI Usage**
+
+```bash
+agniv init <project_name>
+```
+
+Create a new project.
+
+```bash
+agniv update <old_name> <new_name>
+```
+
+Rename an existing project.
+
+```bash
+agniv list [project_name]
+```
+
+List all projects or show metadata.
+
+```bash
+agniv open <project_name>
+```
+
+Decrypt project into `/dev/shm/agnivault/<project>`.
+
+```bash
+agniv view
+```
+
+View open projects (upcoming).
+
+```bash
+agniv close <project_name>
+```
+
+Securely clear the RAM workspace.
+
+```bash
+agniv gen-key
+```
+
+Generate a new master key (`VaultCode`).
+
+```bash
+agniv config <options>
+```
+
+Show or modify `config.yaml`.
+
+---
+
+## **Project Workflow**
+
+### **1. Create a project**
+
+```bash
+agniv init myproject
+```
+
+### **2. Open the project (decrypts to RAM)**
+
+```bash
+agniv open myproject
+```
+
+Files appear here:
+
+```
+/dev/shm/agnivault/myproject/
+```
+
+### **3. Work normally in RAM**
+
+### **4. Close the project**
+
+```bash
+agniv close myproject
+```
+
+RAM data is securely wiped.
+
+---
+
+## **Security Notes**
+
+- Decrypted files exist only in **RAM (`/dev/shm`)**
+- Identity is used only for **authenticity**, not encryption
+- Losing the master key = **permanent data loss**
+- `/dev/shm` clears automatically on reboot
+- Keep permissions secure:
+
+```bash
+chmod 600 ~/.config/agnivault/VaultCode
+chmod 700 ~/.config/agnivault/
+```
+
+---
+
+## **Roadmap**
+
+- Implement `agniv view`
+- Key rotation
+- Project import/export
+- FUSE-based filesystem view
+- Sandboxed execution environment
+- CLI plugin system
+- Auto-encrypt on save
+- Extended metadata & tagging
+
+---
+
+## **License**
+
+This project is licensed under the **GNU General Public License (GPL)**.
+
+---
