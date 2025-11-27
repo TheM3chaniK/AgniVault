@@ -7,7 +7,8 @@
 #include <vector>
 
 using namespace AgniVault::Crypto;
-bool FileHandler::decryptFile(std::string filePath, unsigned char *key) {
+bool FileHandler::decryptFile(std::string filePath, unsigned char *key,
+                              std::string &uname, std::string &projectName) {
   std::vector<unsigned char> cipherBytesWithNonce;
   if (!AgniVault::File::readFile(AgniVault::resolve_path(filePath),
                                  cipherBytesWithNonce)) {
@@ -36,8 +37,8 @@ bool FileHandler::decryptFile(std::string filePath, unsigned char *key) {
 
   // Currently Uname and Project Id is fixed.
   // Both Will be fetched from the db which will be made
-  if (!this->encryption->decryptBuffer(outPlainBytes, key, nonceBytes, "M3K",
-                                       "1234", cipherBytes)) {
+  if (!this->encryption->decryptBuffer(outPlainBytes, key, nonceBytes, uname,
+                                       projectName, cipherBytes)) {
     LOG_DEBUG_ERROR("File Decryption Failed");
     return false;
   }

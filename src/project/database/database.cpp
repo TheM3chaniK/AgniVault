@@ -1,9 +1,10 @@
-#include "database.hpp"
+#include "project/database.hpp"
+#include "helper.hpp"
 #include "logger.hpp"
 #include <sqlite3.h>
 #include <string>
 
-using namespace AgniVault::DB;
+using namespace AgniVault::Project;
 
 Database::Database(sqlite3 *db) {
   this->db = db;
@@ -13,11 +14,9 @@ Database::Database(sqlite3 *db) {
 
 Database::~Database() { sqlite3_close(db); }
 
-std::string Database::getDBName() { return DB_NAME; }
-
 bool Database::openDB() {
   int returnCode = sqlite3_open(
-      reinterpret_cast<char *>(AgniVault::DB::Database::getDBName().data()),
+      reinterpret_cast<char *>(getDBPath().data()),
       &db);
   if (returnCode != SQLITE_OK) {
     LOG_DEBUG_ERROR("Can't Open the AgniVault DB");

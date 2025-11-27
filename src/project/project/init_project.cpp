@@ -1,12 +1,12 @@
-#include "database.hpp"
+#include "project/database.hpp"
 #include "encryption.hpp"
 #include "logger.hpp"
 #include "project.hpp"
 #include <memory>
 #include <vector>
 
-using namespace AgniVault::DB;
-void Project::init_project(std::string name, std::vector<unsigned char> &key) {
+using namespace AgniVault::Project;
+void Project::init_project(std::string name) {
   sqlite3 *db;
   std::unique_ptr<Database> database = std::make_unique<Database>(db);
 
@@ -15,7 +15,7 @@ void Project::init_project(std::string name, std::vector<unsigned char> &key) {
   Crypto::Encryption encryption;
   encryption.generateKey(projectEncryptionKey.data(),
                          projectEncryptionKey.size());
-  if (database->insertProject(name, projectEncryptionKey)) {
+  if (database->insertProject(name)) {
     LOG_DEBUG_INFO("Project Successfully Created");
   } else {
     LOG_DEBUG_ERROR("Project Creation Failed!");

@@ -12,8 +12,10 @@ private:
   std::unique_ptr<Encryption> encryption;
 
 public:
-  bool encryptFile(std::string filePath, unsigned char *key);
-  bool decryptFile(std::string filePath, unsigned char *key);
+  bool encryptFile(std::string filePath, unsigned char *key, std::string &uname,
+                   std::string &projectName);
+  bool decryptFile(std::string filePath, unsigned char *key, std::string &uname,
+                   std::string &projectName);
 };
 } // namespace Crypto
 } // namespace AgniVault

@@ -1,9 +1,9 @@
-#include "database.hpp"
+#include "project/database.hpp"
 #include "helper.hpp"
 #include "logger.hpp"
 #include <sqlite3.h>
 
-using namespace AgniVault::DB;
+using namespace AgniVault::Project;
 
 bool Database::updateProject(std::string oldName, std::string newName) {
 
