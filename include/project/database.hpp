@@ -19,12 +19,11 @@ private:
   };
 
   bool prpareStmt(sqlite3_stmt **stmt, const std::string &sql);
-  bool openDB();
-  bool createProjectTable();
 
 public:
   Database(sqlite3 *db);
   ~Database();
+  bool createProjectTable();
   bool insertProject(std::string name);
   bool updateProject(std::string oldName, std::string newName);
   bool selectProject(std::optional<std::string> projectName, bool &isFound,

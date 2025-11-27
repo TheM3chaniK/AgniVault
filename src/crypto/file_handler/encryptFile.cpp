@@ -13,6 +13,10 @@ bool FileHandler::encryptFile(std::string filePath, unsigned char *key,
     LOG_DEBUG_ERROR("File Can't Be Encrypted");
     return false;
   }
+  if (this->fileContent.empty()) {
+    LOG_DEBUG_ERROR("Plain Bytes Are Empty, skipping encryption for " << filePath);
+    return false;
+  }
   std::vector<unsigned char> &plainBytes = fileContent;
   std::vector<unsigned char> nonce(this->encryption->getNonceByteSize());
   std::vector<unsigned char> outCipherBytes;

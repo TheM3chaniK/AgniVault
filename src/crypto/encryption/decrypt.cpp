@@ -16,6 +16,8 @@ bool Encryption::decryptBuffer(std::vector<unsigned char> &outPlainBytes,
   unsigned char ad[TAG_BYTES];
   this->derivedAd(ad, sizeof(ad), uname, projectId);
   unsigned long long decryptedOutPlainBytesLength = 0;
+  outPlainBytes.resize(cipherBytes.size()); // Resize to hold decrypted data (max size is ciphertext size)
+
   int successCode = crypto_aead_xchacha20poly1305_ietf_decrypt(
       outPlainBytes.data(), &decryptedOutPlainBytesLength, nullptr,
       cipherBytes.data(), cipherBytes.size(), ad, sizeof(ad), nonce.data(),
@@ -24,5 +26,6 @@ bool Encryption::decryptBuffer(std::vector<unsigned char> &outPlainBytes,
     LOG_DEBUG_ERROR("Error While decrypting, CODE: " << successCode);
     return false;
   }
+  outPlainBytes.resize(decryptedOutPlainBytesLength); // Resize to actual decrypted length
   return true;
 }

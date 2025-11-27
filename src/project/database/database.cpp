@@ -6,26 +6,9 @@
 
 using namespace AgniVault::Project;
 
-Database::Database(sqlite3 *db) {
-  this->db = db;
-  openDB();
-  createProjectTable();
-}
+Database::Database(sqlite3 *db) : db(db) {}
 
-Database::~Database() { sqlite3_close(db); }
-
-bool Database::openDB() {
-  int returnCode = sqlite3_open(
-      reinterpret_cast<char *>(getDBPath().data()),
-      &db);
-  if (returnCode != SQLITE_OK) {
-    LOG_DEBUG_ERROR("Can't Open the AgniVault DB");
-    return false;
-  }
-  LOG_DEBUG("Database Created / Open Successfully");
-
-  return true;
-}
+Database::~Database() {}
 
 bool Database::prpareStmt(sqlite3_stmt **stmt, const std::string &sql) {
 
